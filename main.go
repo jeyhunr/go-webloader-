@@ -11,6 +11,7 @@ import (
 
 var (
 	flagOutput = flag.String("o", "", "output file")
+	flagHeader = flag.Bool("header", false, "print HTTP-header")
 )
 
 func main() {
@@ -28,6 +29,7 @@ func main() {
 	defer resp.Body.Close()
 	var w io.Writer
 	w = os.Stdout
+
 	if *flagOutput != "" {
 		// if the directory does not exist
 		err := os.MkdirAll(filepath.Dir(*flagOutput), 0755)
@@ -47,5 +49,15 @@ func main() {
 		w = f
 	}
 
+	if *flagHeader {
+		for k, v := range resp.Header {
+			fmt.Fprintf(w, "%s :\n", k) // key
+			for i, l := range v {
+				// row
+				fmt.Fprintf(w, " %03d: %s \n", i+1, l)
+			}
+		}
+		os.Exit(0)
+	}
 	io.Copy(w, resp.Body)
 }
