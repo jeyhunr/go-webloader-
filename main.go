@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 )
@@ -14,6 +15,14 @@ var (
 	flagHeader = flag.Bool("header", false, "print HTTP-header")
 )
 
+func validateUrl(s string) bool {
+	_, err := url.ParseRequestURI(s)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func main() {
 	flag.Parse()
 	args := flag.Args()
@@ -22,6 +31,11 @@ func main() {
 		os.Exit(1)
 	}
 	url := args[0]
+	// if url doesn't valide
+	if !validateUrl(url) {
+		fmt.Printf("not a vilide url: %s\n", url)
+		os.Exit(1)
+	}
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("error reading %s\n%#v", url, err)
