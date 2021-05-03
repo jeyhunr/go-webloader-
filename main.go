@@ -31,9 +31,9 @@ func main() {
 		os.Exit(1)
 	}
 	url := args[0]
-	// if url doesn't valide
+	// if url doesn't valid
 	if !validateUrl(url) {
-		fmt.Printf("not a vilide url: %s\n", url)
+		fmt.Printf("not a vilid url: %s\n", url)
 		os.Exit(1)
 	}
 	resp, err := http.Get(url)
